@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Source_Sans_3 } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const sourceSans3 = Source_Sans_3({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -38,8 +39,18 @@ export default function RootLayout({
           "font-sans",
           sourceSans3.variable
         )}
+        suppressHydrationWarning
       >
-        <body className="min-h-full flex flex-col">{children}</body>
+        <body className="min-h-full flex flex-col">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
       </html>
     </ClerkProvider>
   );

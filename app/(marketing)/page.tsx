@@ -1,28 +1,29 @@
-import Link from "next/link";
+import { Navbar } from "@/components/marketing/navbar"
+import { Hero } from "@/components/marketing/hero"
+import { SocialProof } from "@/components/marketing/social-proof"
+import { Features } from "@/components/marketing/features"
+import { HowItWorks } from "@/components/marketing/how-it-works"
+import { Pricing } from "@/components/marketing/pricing"
+import { Testimonials } from "@/components/marketing/testimonials"
+import { FAQ } from "@/components/marketing/faq"
+import { CTA } from "@/components/marketing/cta"
+import { Footer } from "@/components/marketing/footer"
 
-export default function Home() {
+export default function MarketingPage() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-130px)] text-center px-4">
-            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl mb-6">
-                Manage All Your Socials <span className="text-primary">in One Place</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mb-10">
-                Social Copilot helps you schedule posts, automate replies, and track analytics across Twitter, LinkedIn, Facebook, and Instagram.
-            </p>
-            <div className="flex gap-4">
-                <Link
-                    href="/dashboard"
-                    className="bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium text-lg"
-                >
-                    Get Started
-                </Link>
-                <Link
-                    href="/sign-in"
-                    className="border px-8 py-3 rounded-md font-medium text-lg hover:bg-muted transition-colors"
-                >
-                    Sign In
-                </Link>
-            </div>
+        <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">
+                <Hero />
+                <SocialProof />
+                <Features />
+                <HowItWorks />
+                <Pricing />
+                <Testimonials />
+                <FAQ />
+                <CTA />
+            </main>
+            <Footer />
         </div>
-    );
+    )
 }
