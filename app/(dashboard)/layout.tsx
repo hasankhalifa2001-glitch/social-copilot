@@ -74,13 +74,13 @@ export default function DashboardLayout({
                                 className={cn(
                                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                     isActive
-                                        ? "bg-zinc-100 dark:bg-zinc-800 text-primary border-l-4 border-primary rounded-l-none"
+                                        ? "bg-zinc-100 dark:bg-white/5 text-sky-500 border-l-4 border-sky-500 rounded-l-none"
                                         : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:text-zinc-900 dark:hover:text-zinc-50"
                                 )}
                             >
                                 <item.icon className={cn(
                                     "w-4 h-4 transition-colors",
-                                    isActive ? "text-primary opacity-100" : "opacity-70"
+                                    isActive ? "text-sky-500 opacity-100" : "opacity-70"
                                 )} />
                                 {item.label}
                             </Link>
@@ -126,10 +126,10 @@ export default function DashboardLayout({
                     <div className="flex items-center gap-4">
                         <button
                             title="Create new post"
-                            className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 md:px-4 md:py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ease-in-out active:scale-95 shadow-sm"
                         >
                             <Plus className="w-4 h-4" />
-                            New Post
+                            <span className="hidden md:block">New Post</span>
                         </button>
                         <ThemeToggle />
                         <button
@@ -139,9 +139,9 @@ export default function DashboardLayout({
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-background"></span>
                         </button>
-                        <div className="md:hidden">
+                        {/* <div className="md:hidden">
                             <UserButton />
-                        </div>
+                        </div> */}
                     </div>
                 </header>
 
