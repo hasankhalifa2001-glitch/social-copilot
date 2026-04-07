@@ -7,7 +7,7 @@ export default function DashboardPage() {
                     { label: "Scheduled", value: "0" },
                     { label: "Connected Accounts", value: "0" },
                 ].map((stat) => (
-                    <div key={stat.label} className="p-6 bg-background border rounded-lg shadow-sm">
+                    <div key={stat.label} className="p-6 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm">
                         <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
                         <p className="text-3xl font-bold mt-2">{stat.value}</p>
                     </div>
