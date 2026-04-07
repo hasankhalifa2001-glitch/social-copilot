@@ -58,7 +58,7 @@ export function Pricing() {
                         <Card
                             key={plan.name}
                             className={cn(
-                                "relative flex flex-col transition-all hover:scale-[1.02]",
+                                "relative flex flex-col transition-all hover:scale-[1.02] overflow-visible",
                                 plan.popular && "border-primary shadow-xl shadow-primary/10"
                             )}
                         >

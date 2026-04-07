@@ -65,9 +65,9 @@ export function Hero() {
                         </div>
                     </div>
 
-                    <div className="relative mt-16 w-full max-w-6xl overflow-hidden rounded-2xl border bg-card p-2 shadow-2xl shadow-primary/10">
+                    {/* <div className="relative mt-16 w-full max-w-6xl overflow-hidden rounded-2xl border bg-card p-2 shadow-2xl shadow-primary/10">
                         <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-muted/20">
-                            {/* In a real app, this would be a high-quality dashboard screenshot */}
+                            In a real app, this would be a high-quality dashboard screenshot
                             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10">
                                 <div className="flex flex-col items-center gap-4">
                                     <div className="h-64 w-[500px] rounded-lg border bg-card shadow-lg p-6 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -81,7 +81,7 @@ export function Hero() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </section>
