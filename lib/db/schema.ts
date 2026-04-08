@@ -18,6 +18,11 @@ export const platformEnum = pgEnum("platform", [
     "linkedin",
     "facebook",
     "instagram",
+    "tiktok",
+    "youtube",
+    "pinterest",
+    "discord",
+    "slack",
 ]);
 export const postStatusEnum = pgEnum("post_status", [
     "draft",
