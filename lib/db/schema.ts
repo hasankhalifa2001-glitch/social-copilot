@@ -65,6 +65,15 @@ export const connectedAccounts = pgTable("connected_accounts", {
     scopes: text("scopes"),
     isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        // هذا هو الفهرس الفريد الذي يحل مشكلة الـ ON CONFLICT
+        userIdPlatformUnique: uniqueIndex("user_id_platform_unique").on(
+            table.userId,
+            table.platform,
+            table.platformUserId
+        ),
+    };
 });
 
 export const posts = pgTable("posts", {

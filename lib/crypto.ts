@@ -51,7 +51,7 @@ export function decrypt(ciphertext: string): string {
 
     decipher.setAuthTag(authTag);
 
-    let decrypted = decipher.update(encryptedHex, "hex", "utf8");
+    let decrypted = decipher.update(encrypted, undefined, "utf8");
     decrypted += decipher.final("utf8");
 
     return decrypted;

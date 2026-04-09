@@ -9,7 +9,7 @@ export const env = createEnv({
         REDIS_URL: z.string().url(),
         GEMINI_API_KEY: z.string().min(1),
         IMAGEKIT_PRIVATE_KEY: z.string().min(1),
-        TOKEN_ENCRYPTION_KEY: z.string().min(32),
+        TOKEN_ENCRYPTION_KEY: z.string().min(64),
         META_APP_ID: z.string().min(1),
         META_APP_SECRET: z.string().min(1),
         TWITTER_CLIENT_ID: z.string().min(1),

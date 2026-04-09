@@ -9,28 +9,29 @@ import { eq, and } from "drizzle-orm";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { platform: string } }
+    { params }: { params: Promise<{ platform: string }> }
 ) {
     const { userId: clerkId } = await auth();
     if (!clerkId) {
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { platform } = params;
+    const resolvedParams = await params;
+    const platform = resolvedParams.platform;
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get("code");
     const state = searchParams.get("state");
     const error = searchParams.get("error");
 
     if (error) {
-        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=${error}`);
+        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=${error}`);
     }
 
     const cookieStore = await cookies();
     const storedState = cookieStore.get("oauth_state")?.value;
 
     if (!code || !state || state !== storedState) {
-        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=invalid_state`);
+        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=invalid_state`);
     }
 
     // Get internal user ID
@@ -39,7 +40,7 @@ export async function GET(
     });
 
     if (!user) {
-        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=user_not_found`);
+        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=user_not_found`);
     }
 
     // Plan limit check (Free users max 2 accounts)
@@ -48,7 +49,7 @@ export async function GET(
             where: eq(connectedAccounts.userId, user.id),
         });
         if (count.length >= 2) {
-            return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=plan_limit_reached`);
+            return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=plan_limit_reached`);
         }
     }
 
@@ -63,7 +64,7 @@ export async function GET(
         if (platform === "twitter") {
             const codeVerifier = cookieStore.get("oauth_code_verifier")?.value;
             if (!codeVerifier) {
-                return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=missing_verifier`);
+                return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=missing_verifier`);
             }
 
             const tokenResponse = await fetch("https://api.twitter.com/2/oauth2/token", {
@@ -130,7 +131,7 @@ export async function GET(
             // Avatar is more complex in LinkedIn, skipping for simplicity in stub or use default
             avatarUrl = null;
         } else {
-            return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?error=unsupported_platform`);
+            return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=unsupported_platform`);
         }
 
         // Upsert connected account
@@ -161,12 +162,12 @@ export async function GET(
                 },
             });
 
-        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/accounts?success=true`);
+        return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?success=true`);
     } catch (err) {
         const error = err as Error;
         console.error(`OAuth callback error for ${platform}:`, error);
         return NextResponse.redirect(
-            `${env.NEXT_PUBLIC_APP_URL}/accounts?error=callback_failed&message=${encodeURIComponent(error.message)}`
+            `${env.NEXT_PUBLIC_APP_URL}/dashboard/accounts?error=callback_failed&message=${encodeURIComponent(error.message)}`
         );
     } finally {
         cookieStore.delete("oauth_state");

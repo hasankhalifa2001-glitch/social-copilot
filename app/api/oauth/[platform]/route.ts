@@ -13,7 +13,9 @@ export async function GET(
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { platform } = await params;
+    // 1. حل مشكلة الـ params
+    const resolvedParams = await params;
+    const platform = resolvedParams.platform;
     const state = randomBytes(32).toString("hex");
     const cookieStore = await cookies();
 
