@@ -146,7 +146,7 @@ export const scheduledJobs = pgTable("scheduled_jobs", {
         .notNull()
         .unique()
         .references(() => posts.id, { onDelete: "cascade" }),
-    bullJobId: text("bull_job_id").notNull(),
+    externalJobId: text("external_job_id"), // make optional or remove later
     status: jobStatusEnum("status").default("pending").notNull(),
     scheduledAt: timestamp("scheduled_at").notNull(),
     attempts: integer("attempts").default(0).notNull(),

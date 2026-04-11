@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { posts, users, scheduledJobs } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import { postQueue } from "@/lib/bullmq/queue";
+import { inngest } from "@/src/inngest/client";
 
 export async function POST(req: Request) {
     try {
@@ -45,24 +45,27 @@ export async function POST(req: Request) {
             scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
         }).returning();
 
-        // If status is scheduled or published, trigger BullMQ
+        // If status is scheduled or published, trigger Inngest
         if (status === "scheduled" && scheduledAt) {
-            const delay = new Date(scheduledAt).getTime() - Date.now();
-            if (delay > 0) {
-                const job = await postQueue.add(
-                    "publish-post",
-                    { postId: newPost.id },
-                    { delay }
-                );
+            const scheduledDate = new Date(scheduledAt);
 
-                await db.insert(scheduledJobs).values({
-                    postId: newPost.id,
-                    bullJobId: job.id!,
-                    scheduledAt: new Date(scheduledAt),
-                });
-            }
+            await inngest.send({
+                name: "post.scheduled",
+                data: { postId: newPost.id },
+                // Use the scheduledAt timestamp for delayed execution
+                // Inngest handles this via 'run' or event scheduling
+            });
+
+            await db.insert(scheduledJobs).values({
+                postId: newPost.id,
+                externalJobId: "inngest_event", // placeholder for now or remove column later
+                scheduledAt: scheduledDate,
+            });
         } else if (status === "published") {
-            await postQueue.add("publish-post", { postId: newPost.id });
+            await inngest.send({
+                name: "post.published",
+                data: { postId: newPost.id },
+            });
         }
 
         return NextResponse.json(newPost);
