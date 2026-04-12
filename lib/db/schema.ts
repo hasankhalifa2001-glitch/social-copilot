@@ -140,19 +140,6 @@ export const analyticsSnapshots = pgTable("analytics_snapshots", {
     profileViews: integer("profile_views").default(0),
 });
 
-export const scheduledJobs = pgTable("scheduled_jobs", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    postId: uuid("post_id")
-        .notNull()
-        .unique()
-        .references(() => posts.id, { onDelete: "cascade" }),
-    externalJobId: text("external_job_id"), // make optional or remove later
-    status: jobStatusEnum("status").default("pending").notNull(),
-    scheduledAt: timestamp("scheduled_at").notNull(),
-    attempts: integer("attempts").default(0).notNull(),
-    lastError: text("last_error"),
-});
-
 export const subscriptions = pgTable("subscriptions", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
@@ -193,10 +180,6 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
         references: [users.id],
     }),
     platformResults: many(postPlatformResults),
-    scheduledJob: one(scheduledJobs, {
-        fields: [posts.id],
-        references: [scheduledJobs.postId],
-    }),
 }));
 
 export const postPlatformResultsRelations = relations(postPlatformResults, ({ one }) => ({
@@ -225,13 +208,6 @@ export const analyticsSnapshotsRelations = relations(analyticsSnapshots, ({ one 
     connectedAccount: one(connectedAccounts, {
         fields: [analyticsSnapshots.connectedAccountId],
         references: [connectedAccounts.id],
-    }),
-}));
-
-export const scheduledJobsRelations = relations(scheduledJobs, ({ one }) => ({
-    post: one(posts, {
-        fields: [scheduledJobs.postId],
-        references: [posts.id],
     }),
 }));
 
