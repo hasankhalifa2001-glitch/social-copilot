@@ -65,7 +65,7 @@ export function ComposerActions({
                         : "Post published!"
             );
 
-            router.push("/posts");
+            router.push("/dashboard");
         } catch (error: any) {
             toast.error(error.message || "Failed to save post");
         } finally {
