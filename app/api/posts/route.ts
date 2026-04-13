@@ -93,7 +93,7 @@ export async function POST(req: Request) {
             mediaUrls,
             platforms,
             status,
-            scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+            scheduledAt: scheduledAt ? new Date(scheduledAt) : new Date(),
         }).returning();
 
         if (status === "scheduled" && scheduledAt) {
