@@ -5,8 +5,8 @@ import { eq } from "drizzle-orm";
 import { decrypt } from "@/lib/crypto";
 
 export const syncAnalytics = inngest.createFunction(
-    { id: "sync-analytics" },
-    { cron: "0 */6 * * *" },
+    { id: "sync-analytics", triggers: { cron: "0 */6 * * *" }, },
+
     async ({ step }) => {
         const accounts = await step.run("fetch-accounts", async () => {
             return await db.query.connectedAccounts.findMany({

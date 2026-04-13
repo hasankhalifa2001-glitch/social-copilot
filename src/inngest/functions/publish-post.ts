@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { inngest } from "../client";
 import { db } from "@/lib/db";
 import { posts, postPlatformResults, connectedAccounts } from "@/lib/db/schema";
@@ -25,8 +26,8 @@ const ADAPTERS: Record<string, (args: { post: any; account: any }) => Promise<{ 
 };
 
 export const publishPost = inngest.createFunction(
-    { id: "publish-post" },
-    { event: "post.scheduled" },
+    { id: "publish-post", triggers: { event: "post.scheduled" }, },
+
     async ({ event, step }) => {
         const { postId, scheduledAt } = event.data;
 
@@ -80,9 +81,9 @@ export const publishPost = inngest.createFunction(
                 await db.insert(postPlatformResults).values({
                     postId: post.id,
                     platform: platform as any,
-                    platformPostId: result.platformPostId || null,
+                    platformPostId: ("platformPostId" in result ? result.platformPostId : null),
                     status: result.status as any,
-                    errorMessage: result.error || null,
+                    errorMessage: ("error" in result ? result.error : null),
                     publishedAt: result.status === "published" ? new Date() : null,
                 });
             });

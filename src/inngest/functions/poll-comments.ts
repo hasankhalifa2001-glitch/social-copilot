@@ -6,8 +6,8 @@ import { decrypt } from "@/lib/crypto";
 import { geminiModel } from "@/lib/gemini";
 
 export const pollComments = inngest.createFunction(
-    { id: "poll-comments" },
-    { cron: "*/15 * * * *" },
+    { id: "poll-comments", triggers: { cron: "*/15 * * * *" }, },
+
     async ({ step }) => {
         const activeRules = await step.run("fetch-active-rules", async () => {
             return await db.query.autoReplyRules.findMany({

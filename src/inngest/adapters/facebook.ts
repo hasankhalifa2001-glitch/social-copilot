@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { decrypt } from "@/lib/crypto";
 
 export async function publishToFacebook({ post, account }: { post: any; account: any }) {

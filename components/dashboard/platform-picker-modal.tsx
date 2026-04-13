@@ -37,7 +37,7 @@ export function PlatformPickerModal({
     const router = useRouter();
 
     const handleConnect = (platformId: string) => {
-        router.push(`/api/oauth/${platformId}`);
+        router.push(`/api/oauth/${platformId}/authorize`);
         onClose();
     };
 
