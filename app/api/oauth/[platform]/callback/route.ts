@@ -51,8 +51,6 @@ export async function GET(
         // 1. Exchange code for tokens
         const redirectUri = `${env.NEXT_PUBLIC_APP_URL}/api/oauth/${platform}/callback`;
         const tokenParams = new URLSearchParams({
-            client_id: config.clientId,
-            client_secret: config.clientSecret,
             code: code!,
             grant_type: "authorization_code",
             redirect_uri: redirectUri,
@@ -63,17 +61,31 @@ export async function GET(
             tokenParams.set("code_verifier", codeVerifier);
         }
 
-        // TikTok requires client_key instead of client_id in some places, but here we use what's in config
-        if (platform === "tiktok") {
-            tokenParams.set("client_key", config.clientId);
+        const headers: Record<string, string> = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
+        };
+
+        // Twitter and Pinterest require Basic Auth for token exchange
+        if (platform === "twitter" || platform === "pinterest") {
+            const authHeader = Buffer.from(
+                `${config.clientId}:${config.clientSecret}`
+            ).toString("base64");
+            headers["Authorization"] = `Basic ${authHeader}`;
+        } else {
+            // For other platforms, include credentials in the body
+            tokenParams.set("client_id", config.clientId);
+            tokenParams.set("client_secret", config.clientSecret);
+
+            // TikTok requires client_key instead of client_id
+            if (platform === "tiktok") {
+                tokenParams.set("client_key", config.clientId);
+            }
         }
 
         const tokenResponse = await fetch(config.tokenUrl, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                Accept: "application/json",
-            },
+            headers,
             body: tokenParams,
         });
 
