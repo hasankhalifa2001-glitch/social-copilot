@@ -46,11 +46,18 @@ export const publishPost = inngest.createFunction(
             });
         });
 
+        console.log(post)
+
         if (!post) return { error: "Post not found" };
-        if (post.status === "published") return { message: "Post already published" };
+        // if (post.status === "published")  { message: "Post already published" };
 
         const platformsToPublish = post.platforms as string[];
-        const results = [];
+        const results: {
+            platform: string;
+            status: string;
+            platformPostId?: string;
+            error?: string;
+        }[] = [];
 
         for (const platform of platformsToPublish) {
             const result = await step.run(`publish-${platform}`, async () => {
