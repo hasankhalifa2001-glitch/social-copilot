@@ -16,11 +16,13 @@ import {
     Bell,
     Plus,
     Menu,
-    X
+    X,
+    BarChart3
 } from "lucide-react";
 
 const sidebarItems = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+    { label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
     { label: "Compose", icon: PenSquare, href: "/dashboard/compose" },
     { label: "Calendar", icon: Calendar, href: "/dashboard/calendar" },
     { label: "Accounts", icon: UserCircle, href: "/dashboard/accounts" },
