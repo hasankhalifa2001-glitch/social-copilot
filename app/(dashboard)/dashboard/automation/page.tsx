@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
-import { RulesList } from "./_components/rules-list";
+import { RulesList, CreateRuleButton } from "./_components/rules-list";
 
 function AutomationHeader({ plan }: { plan: string }) {
     return (
@@ -28,7 +28,7 @@ function AutomationHeader({ plan }: { plan: string }) {
 
 async function AutomationCreateButton() {
     const { accounts } = await getAutomationData();
-    return <RulesList.CreateButton accounts={accounts} />;
+    return <CreateRuleButton accounts={accounts} />;
 }
 
 function PlanLimitsCard({ plan, count }: { plan: string, count: number }) {

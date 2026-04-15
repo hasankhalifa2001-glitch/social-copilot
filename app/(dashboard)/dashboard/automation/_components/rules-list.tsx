@@ -193,7 +193,7 @@ export function RulesList({ rules, accounts }: RulesListProps) {
     );
 }
 
-RulesList.CreateButton = function CreateButton({ accounts }: { accounts: any[] }) {
+export function CreateRuleButton({ accounts }: { accounts: any[] }) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -209,4 +209,4 @@ RulesList.CreateButton = function CreateButton({ accounts }: { accounts: any[] }
             />
         </>
     );
-};
+}
