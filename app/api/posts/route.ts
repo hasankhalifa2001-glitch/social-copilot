@@ -90,7 +90,7 @@ export async function POST(req: Request) {
 
         if (status === "scheduled" && scheduledAt) {
             await inngest.send({
-                name: "post.scheduled",
+                name: "post/scheduled",
                 data: {
                     postId: newPost.id,
                     scheduledAt: new Date(scheduledAt).toISOString(),
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
             });
         } else if (status === "published") {
             await inngest.send({
-                name: "post.scheduled",
+                name: "post/scheduled",
                 data: {
                     postId: newPost.id,
                     scheduledAt: new Date().toISOString(),

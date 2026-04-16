@@ -106,7 +106,7 @@ export default function AnalyticsPage() {
                             Upgrade now to see how your social presence is growing.
                         </p>
                         <Button asChild size="lg">
-                            <Link href="/dashboard/settings/billing">
+                            <Link href="/dashboard/billing">
                                 Upgrade Plan
                             </Link>
                         </Button>

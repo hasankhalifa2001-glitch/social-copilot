@@ -27,7 +27,7 @@ const ADAPTERS: Record<string, (args: { post: any; account: any }) => Promise<{ 
 };
 
 export const publishPost = inngest.createFunction(
-    { id: "publish-post", triggers: { event: "post.scheduled" }, },
+    { id: "publish-post", triggers: { event: "post/scheduled" }, },
 
     async ({ event, step }) => {
         const { postId, scheduledAt } = event.data;

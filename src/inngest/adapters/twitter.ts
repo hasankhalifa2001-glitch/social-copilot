@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TwitterApi } from "twitter-api-v2";
+
+
 
 export async function fetchTwitterComments(accessToken: string, username: string) {
     const response = await fetch(
@@ -50,4 +53,32 @@ export async function fetchTwitterAnalytics(accessToken: string, userId: string)
         impressions: 0, // Twitter API v2 requires special permissions/endpoints for impressions
         engagements: 0,
     };
+}
+
+export async function publishToTwitter({ post, account }: { post: any; account: any }) {
+    const client = new TwitterApi(account.accessToken);
+
+    const mediaIds: string[] = [];
+
+    if (post.mediaUrls && post.mediaUrls.length > 0) {
+        for (const url of post.mediaUrls) {
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            // Determine mime type from URL or response headers if possible
+            // For simplicity, we'll try to detect or use a default
+            const mediaId = await client.v1.uploadMedia(buffer, { type: url.endsWith(".mp4") ? "video/mp4" : "image/jpeg" });
+            mediaIds.push(mediaId);
+        }
+    }
+
+    const { data: tweet } = await client.v2.tweet({
+        text: post.content,
+        ...(mediaIds.length > 0
+            ? { media: { media_ids: mediaIds.slice(0, 4) as [string] | [string, string] | [string, string, string] | [string, string, string, string] } }
+            : {}),
+    });
+
+    return { platformPostId: tweet.id };
 }
