@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ComposePage() {
-    const [content, setContent] = useState("");
+    const [content, setContent] = useState<Record<string, string>>({ base: "" });
     const [mediaUrls, setMediaUrls] = useState<string[]>([]);
     const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
     const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
@@ -81,8 +81,8 @@ export default function ComposePage() {
                                     selectedPlatforms={selectedPlatforms}
                                 />
                                 <AIAssistBar
-                                    content={content}
-                                    setContent={setContent}
+                                    content={content.base}
+                                    setContent={(newBase) => setContent(prev => ({ ...prev, base: newBase }))}
                                     selectedPlatforms={selectedPlatforms}
                                 />
                             </div>

@@ -11,11 +11,12 @@ import {
     SiYoutube
 } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
-import { Music2, Pin, Hash, MessageSquare, MoreHorizontal, Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
+import { Music2, Pin, Hash, MessageSquare, MoreHorizontal, Heart, MessageCircle, Share2, Bookmark, RotateCw, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface PostPreviewProps {
-    content: string;
+    content: Record<string, string>;
     mediaUrls: string[];
     selectedPlatforms: string[];
 }
@@ -41,7 +42,7 @@ export function PostPreview({
         return (
             <div className="h-full flex flex-col items-center justify-center text-muted-foreground border-2 border-dashed rounded-lg p-12 text-center">
                 <div className="bg-muted p-4 rounded-full mb-4">
-                    <MoreHorizontal className="w-8 h-8" />
+                    < MoreHorizontal className="w-8 h-8" />
                 </div>
                 <p className="text-sm font-medium">Select a platform to see a preview</p>
             </div>
@@ -50,11 +51,11 @@ export function PostPreview({
 
     return (
         <Tabs defaultValue={selectedPlatforms[0]} className="w-full">
-            <TabsList className="w-full justify-start overflow-x-auto h-auto p-1 bg-muted/50">
+            <TabsList className="w-full justify-start overflow-x-auto h-auto p-1 bg-muted/50 flex-nowrap">
                 {selectedPlatforms.map((platform) => {
                     const Icon = PLATFORM_ICONS[platform];
                     return (
-                        <TabsTrigger key={platform} value={platform} className="gap-2 px-4 py-2 capitalize">
+                        <TabsTrigger key={platform} value={platform} className="gap-2 px-4 py-2 capitalize shrink-0">
                             {Icon && <Icon className="w-3 h-3" />}
                             {platform}
                         </TabsTrigger>
@@ -62,21 +63,24 @@ export function PostPreview({
                 })}
             </TabsList>
 
-            {selectedPlatforms.map((platform) => (
-                <TabsContent key={platform} value={platform} className="mt-6">
-                    <div className="max-w-100 mx-auto">
-                        {platform === "twitter" && (
-                            <TwitterPreview content={content} mediaUrls={mediaUrls} />
-                        )}
-                        {platform === "instagram" && (
-                            <InstagramPreview content={content} mediaUrls={mediaUrls} />
-                        )}
-                        {(platform !== "twitter" && platform !== "instagram") && (
-                            <GenericPreview platform={platform} content={content} mediaUrls={mediaUrls} />
-                        )}
-                    </div>
-                </TabsContent>
-            ))}
+            {selectedPlatforms.map((platform) => {
+                const platformContent = content[platform] ?? content.base;
+                return (
+                    <TabsContent key={platform} value={platform} className="mt-6">
+                        <div className="max-w-100 mx-auto">
+                            {platform === "twitter" && (
+                                <TwitterPreview content={platformContent} mediaUrls={mediaUrls} />
+                            )}
+                            {platform === "instagram" && (
+                                <InstagramPreview content={platformContent} mediaUrls={mediaUrls} />
+                            )}
+                            {(platform !== "twitter" && platform !== "instagram") && (
+                                <GenericPreview platform={platform} content={platformContent} mediaUrls={mediaUrls} />
+                            )}
+                        </div>
+                    </TabsContent>
+                );
+            })}
         </Tabs>
     );
 }
@@ -151,10 +155,10 @@ function InstagramPreview({ content, mediaUrls }: { content: string; mediaUrls: 
                 </div>
                 <div className="space-y-1">
                     <p className="text-[10px] font-bold">12,345 likes</p>
-                    <p className="text-xs whitespace-pre-wrap">
+                    <div className="text-xs whitespace-pre-wrap">
                         <span className="font-bold mr-2">username</span>
                         {content || "Your caption here..."}
-                    </p>
+                    </div>
                     <p className="text-[10px] text-muted-foreground uppercase">1 minute ago</p>
                 </div>
             </CardContent>
@@ -187,6 +191,3 @@ function GenericPreview({ platform, content, mediaUrls }: { platform: string; co
         </Card>
     );
 }
-
-import { cn } from "@/lib/utils";
-import { RotateCw, Image as ImageIcon } from "lucide-react";

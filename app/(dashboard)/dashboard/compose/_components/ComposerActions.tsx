@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 interface ComposerActionsProps {
-    content: string;
+    content: Record<string, string>;
     mediaUrls: string[];
     selectedPlatforms: string[];
     scheduledAt: Date | null;
@@ -29,7 +29,8 @@ export function ComposerActions({
             return;
         }
 
-        if (!content.trim() && mediaUrls.length === 0) {
+        const hasContent = content.base.trim() || Object.values(content).some(c => c.trim());
+        if (!hasContent && mediaUrls.length === 0) {
             toast.error("Please add some content or media");
             return;
         }

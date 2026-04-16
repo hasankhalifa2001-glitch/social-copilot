@@ -77,8 +77,15 @@ export const publishPost = inngest.createFunction(
 
                 try {
                     const validAccessToken = await getValidAccessToken(account);
+
+                    // Handle per-platform content customization
+                    let platformSpecificContent = post.content;
+                    if (typeof post.content === "object" && post.content !== null) {
+                        platformSpecificContent = (post.content as Record<string, string>)[platform] || (post.content as Record<string, string>).base;
+                    }
+
                     const { platformPostId } = await adapter({
-                        post,
+                        post: { ...post, content: platformSpecificContent },
                         account: { ...account, accessToken: validAccessToken },
                     });
                     return { platform, status: "published", platformPostId };
