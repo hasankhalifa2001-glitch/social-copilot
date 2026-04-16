@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ImageKitContext } from "@/components/dashboard/imagekit-context";
 import {
     LayoutDashboard,
     PenSquare,
@@ -113,45 +114,47 @@ export default function DashboardLayout({
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden w-full">
-                {/* Header */}
-                <header className="h-16 border-b border-zinc-200 dark:border-zinc-800 px-4 md:px-6 flex items-center justify-between bg-white dark:bg-zinc-950">
-                    <div className="flex items-center gap-4">
-                        <button
-                            title="Open sidebar"
-                            className="md:hidden p-2 hover:bg-muted rounded-md"
-                            onClick={() => setIsMobileSidebarOpen(true)}
-                        >
-                            <Menu className="w-6 h-6" />
-                        </button>
-                        <h1 className="font-semibold text-lg">Dashboard</h1>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Link
-                            href="/dashboard/compose"
-                            title="Create new post"
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 md:px-4 md:py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ease-in-out active:scale-95 shadow-sm"
-                        >
-                            <Plus className="w-4 h-4" />
-                            <span className="hidden md:block">New Post</span>
-                        </Link>
-                        <ThemeToggle />
-                        <button
-                            title="View notifications"
-                            className="p-2 hover:bg-muted rounded-full transition-colors relative"
-                        >
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-background"></span>
-                        </button>
-                        {/* <div className="md:hidden">
+                <ImageKitContext>
+                    {/* Header */}
+                    <header className="h-16 border-b border-zinc-200 dark:border-zinc-800 px-4 md:px-6 flex items-center justify-between bg-white dark:bg-zinc-950">
+                        <div className="flex items-center gap-4">
+                            <button
+                                title="Open sidebar"
+                                className="md:hidden p-2 hover:bg-muted rounded-md"
+                                onClick={() => setIsMobileSidebarOpen(true)}
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                            <h1 className="font-semibold text-lg">Dashboard</h1>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <Link
+                                href="/dashboard/compose"
+                                title="Create new post"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 md:px-4 md:py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ease-in-out active:scale-95 shadow-sm"
+                            >
+                                <Plus className="w-4 h-4" />
+                                <span className="hidden md:block">New Post</span>
+                            </Link>
+                            <ThemeToggle />
+                            <button
+                                title="View notifications"
+                                className="p-2 hover:bg-muted rounded-full transition-colors relative"
+                            >
+                                <Bell className="w-5 h-5" />
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-background"></span>
+                            </button>
+                            {/* <div className="md:hidden">
                             <UserButton />
                         </div> */}
-                    </div>
-                </header>
+                        </div>
+                    </header>
 
-                {/* Content Area */}
-                <main className="flex-1 overflow-y-auto p-6 bg-zinc-50 dark:bg-zinc-900/30">
-                    {children}
-                </main>
+                    {/* Content Area */}
+                    <main className="flex-1 overflow-y-auto p-6 bg-zinc-50 dark:bg-zinc-900/30">
+                        {children}
+                    </main>
+                </ImageKitContext>
             </div>
         </div>
     );
