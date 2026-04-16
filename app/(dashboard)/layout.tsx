@@ -126,13 +126,14 @@ export default function DashboardLayout({
                         <h1 className="font-semibold text-lg">Dashboard</h1>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button
+                        <Link
+                            href="/dashboard/compose"
                             title="Create new post"
                             className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 md:px-4 md:py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ease-in-out active:scale-95 shadow-sm"
                         >
                             <Plus className="w-4 h-4" />
                             <span className="hidden md:block">New Post</span>
-                        </button>
+                        </Link>
                         <ThemeToggle />
                         <button
                             title="View notifications"

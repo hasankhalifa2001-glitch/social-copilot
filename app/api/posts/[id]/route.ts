@@ -5,7 +5,7 @@ import { posts, users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { inngest } from "@/src/inngest/client";
 
-export async function PUT(
+export async function PATCH(
     req: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {

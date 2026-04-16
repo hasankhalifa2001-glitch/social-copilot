@@ -88,12 +88,17 @@ export const OAUTH_CONFIG: Record<Platform, PlatformConfig> = {
         scopes: ["user_accounts:read", "pins:read", "pins:write", "boards:read", "boards:write"],
     },
     discord: {
-        clientId: "", // Not needed for bot-only as per instructions, but keeping structure
+        // Instructions say: generate a Discord bot invite URL instead of standard OAuth flow.
+        // We'll use this in a special way in the frontend.
+        clientId: "",
         clientSecret: "",
-        authorizeUrl: "",
+        authorizeUrl: "https://discord.com/api/oauth2/authorize",
         tokenUrl: "",
         profileUrl: "https://discord.com/api/v10/users/@me",
-        scopes: ["identify", "guilds"],
+        scopes: ["bot", "applications.commands", "identify", "guilds"],
+        additionalParams: {
+            permissions: "2147483648", // Minimum permissions or as needed
+        }
     },
     slack: {
         clientId: env.SLACK_CLIENT_ID,

@@ -37,7 +37,14 @@ export function PlatformPickerModal({
     const router = useRouter();
 
     const handleConnect = (platformId: string) => {
-        router.push(`/api/oauth/${platformId}/authorize`);
+        if (platformId === "discord") {
+            // Special handling for Discord Bot Invite
+            const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || "";
+            const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&permissions=2147483648&scope=bot%20applications.commands&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + "/api/oauth/discord/callback")}`;
+            window.location.assign(inviteUrl);
+        } else {
+            router.push(`/api/oauth/${platformId}/authorize`);
+        }
         onClose();
     };
 

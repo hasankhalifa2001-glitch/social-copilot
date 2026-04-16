@@ -99,14 +99,14 @@ export default async function BillingPage() {
                 {/* Current Plan Card */}
                 <Card className="md:col-span-2">
                     <CardHeader>
-                        <div className="flex justify-between items-start">
-                            <div>
-                                <CardTitle>Current Plan</CardTitle>
-                                <CardDescription>You are currently on the {plan} plan.</CardDescription>
-                            </div>
-                            <Badge variant={plan === "free" ? "secondary" : "default"} className="capitalize">
-                                {plan}
-                            </Badge>
+                        <div className="flex items-center justify-between">
+                            <CardTitle>Subscription Plan</CardTitle>
+                            <Button variant="outline" asChild>
+                                <Link href="https://dashboard.clerk.com" target="_blank">
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Manage Billing
+                                </Link>
+                            </Button>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
