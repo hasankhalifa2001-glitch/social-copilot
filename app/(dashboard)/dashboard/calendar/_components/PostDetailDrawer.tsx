@@ -10,6 +10,17 @@ import {
     SheetDescription,
     SheetFooter
 } from "@/components/ui/sheet";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -184,15 +195,36 @@ export default function PostDetailDrawer({ post, isOpen, onClose, onUpdate }: Po
                         <Edit2 className="h-4 w-4 mr-2" />
                         Edit Post
                     </Button>
-                    <Button
-                        className="w-full"
-                        variant="destructive"
-                        onClick={handleDelete}
-                        disabled={isDeleting}
-                    >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        {isDeleting ? "Deleting..." : "Delete Post"}
-                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                className="w-full"
+                                variant="destructive"
+                                disabled={isDeleting}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                {isDeleting ? "Deleting..." : "Delete Post"}
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete your
+                                    scheduled post and cancel any upcoming publishing.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={handleDelete}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                    Delete
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </SheetFooter>
             </SheetContent>
         </Sheet>

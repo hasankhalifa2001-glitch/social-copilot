@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { RulesList, CreateRuleButton } from "./_components/rules-list";
+import { PLAN_LIMITS, Plan } from "@/lib/billing";
 
 function AutomationHeader({ plan }: { plan: string }) {
     return (
@@ -34,8 +35,8 @@ async function AutomationCreateButton() {
 function PlanLimitsCard({ plan, count }: { plan: string, count: number }) {
     if (plan === "free") return null;
 
-    const max = plan === "pro" ? 5 : "Unlimited";
-    const percentage = typeof max === "number" ? (count / max) * 100 : 0;
+    const max = PLAN_LIMITS[plan as Plan]?.autoReplyRules || 0;
+    const percentage = (count / max) * 100;
 
     return (
         <Card className="bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800">
@@ -46,9 +47,7 @@ function PlanLimitsCard({ plan, count }: { plan: string, count: number }) {
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-2xl font-bold">{count} <span className="text-sm font-normal text-muted-foreground">/ {max} rules</span></span>
                 </div>
-                {typeof max === "number" && (
-                    <Progress value={percentage} className="h-2" />
-                )}
+                <Progress value={percentage} className="h-2" />
             </CardContent>
         </Card>
     );
