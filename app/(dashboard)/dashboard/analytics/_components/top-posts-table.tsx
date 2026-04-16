@@ -17,6 +17,11 @@ interface Post {
     status: string;
     publishedAt: string | Date | null;
     createdAt: string | Date;
+    platformResults?: {
+        platform: string;
+        status: string;
+        publishedAt: string | Date | null;
+    }[];
 }
 
 interface TopPostsTableProps {
@@ -50,19 +55,33 @@ export function TopPostsTable({ posts }: TopPostsTableProps) {
                                 {post.content}
                             </TableCell>
                             <TableCell>
-                                <div className="flex gap-1">
-                                    {(post.platforms as string[]).map((p) => (
-                                        <Badge key={p} variant="secondary" className="capitalize">
-                                            {p}
-                                        </Badge>
-                                    ))}
+                                <div className="flex flex-wrap gap-1">
+                                    {post.platformResults && post.platformResults.length > 0 ? (
+                                        post.platformResults.map((result, idx) => (
+                                            <Badge
+                                                key={`${post.id}-${result.platform}-${idx}`}
+                                                variant={result.status === "published" ? "default" : "destructive"}
+                                                className="capitalize text-[10px] px-1.5"
+                                            >
+                                                {result.platform}
+                                            </Badge>
+                                        ))
+                                    ) : (
+                                        (post.platforms as string[]).map((p) => (
+                                            <Badge key={p} variant="secondary" className="capitalize text-[10px] px-1.5">
+                                                {p}
+                                            </Badge>
+                                        ))
+                                    )}
                                 </div>
                             </TableCell>
                             <TableCell>
                                 {new Date(post.publishedAt || post.createdAt).toLocaleDateString()}
                             </TableCell>
                             <TableCell className="text-right">
-                                <Badge variant={post.status === "published" ? "default" : "secondary"}>
+                                <Badge
+                                    variant={post.status === "published" ? "default" : post.status === "failed" ? "destructive" : "secondary"}
+                                >
                                     {post.status}
                                 </Badge>
                             </TableCell>

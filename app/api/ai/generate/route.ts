@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { geminiModel } from "@/lib/gemini";
+import { checkLimit, trackAIUsage } from "@/lib/billing";
 
 export async function POST(req: Request) {
     try {
@@ -10,7 +11,6 @@ export async function POST(req: Request) {
         const { topic, tone, platform, charLimit } = await req.json();
 
         // Plan limit enforcement
-        const { checkLimit } = await import("@/lib/billing");
         const { allowed, limit } = await checkLimit(userId, "aiGenerationsPerMonth");
 
         if (!allowed) {
@@ -22,6 +22,8 @@ export async function POST(req: Request) {
         const result = await geminiModel.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
+
+        await trackAIUsage(userId, "generate");
 
         return NextResponse.json({ text });
     } catch (error) {

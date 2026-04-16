@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, posts, connectedAccounts, autoReplyRules } from "./db/schema";
+import { users, posts, connectedAccounts, autoReplyRules, aiUsage } from "./db/schema";
 import { eq, and, gte, count } from "drizzle-orm";
 
 export type Plan = "free" | "pro" | "agency";
@@ -68,12 +68,11 @@ export async function getUsage(clerkUserId: string) {
 
     const [aiCount] = await db
         .select({ value: count() })
-        .from(posts)
+        .from(aiUsage)
         .where(
             and(
-                eq(posts.userId, user.id),
-                eq(posts.aiGenerated, true),
-                gte(posts.createdAt, startOfMonth)
+                eq(aiUsage.userId, user.id),
+                gte(aiUsage.createdAt, startOfMonth)
             )
         );
 
@@ -107,6 +106,19 @@ export async function checkLimit(
         limit,
         current,
     };
+}
+
+export async function trackAIUsage(clerkUserId: string, action: string) {
+    const user = await db.query.users.findFirst({
+        where: eq(users.clerkId, clerkUserId),
+    });
+
+    if (!user) return;
+
+    await db.insert(aiUsage).values({
+        userId: user.id,
+        action,
+    });
 }
 
 export async function requirePlan(clerkUserId: string, minPlan: Plan) {

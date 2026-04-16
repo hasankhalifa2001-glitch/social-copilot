@@ -141,6 +141,15 @@ export const analyticsSnapshots = pgTable("analytics_snapshots", {
     profileViews: integer("profile_views").default(0),
 });
 
+export const aiUsage = pgTable("ai_usage", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    action: text("action").notNull(), // generate, rewrite, hashtags, ideas, best-time
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const subscriptions = pgTable("subscriptions", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
@@ -164,6 +173,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
         fields: [users.id],
         references: [subscriptions.userId],
     }),
+    aiUsage: many(aiUsage),
 }));
 
 export const connectedAccountsRelations = relations(connectedAccounts, ({ one, many }) => ({
@@ -209,6 +219,13 @@ export const analyticsSnapshotsRelations = relations(analyticsSnapshots, ({ one 
     connectedAccount: one(connectedAccounts, {
         fields: [analyticsSnapshots.connectedAccountId],
         references: [connectedAccounts.id],
+    }),
+}));
+
+export const aiUsageRelations = relations(aiUsage, ({ one }) => ({
+    user: one(users, {
+        fields: [aiUsage.userId],
+        references: [users.id],
     }),
 }));
 
