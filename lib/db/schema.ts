@@ -120,6 +120,7 @@ export const autoReplyRules = pgTable("auto_reply_rules", {
     aiEnabled: boolean("ai_enabled").default(false).notNull(),
     aiPersona: text("ai_persona"),
     isActive: boolean("is_active").default(true).notNull(),
+    repliedCommentIds: jsonb("replied_comment_ids").default([]).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -1,9 +1,12 @@
 import { inngest } from "../client";
 import { db } from "@/lib/db";
-import { autoReplyRules, connectedAccounts } from "@/lib/db/schema";
+import { autoReplyRules } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { decrypt } from "@/lib/crypto";
 import { geminiModel } from "@/lib/gemini";
+import { getValidAccessToken } from "@/lib/token-refresh";
+import { fetchTwitterComments, replyToTwitterComment } from "../adapters/twitter";
+import { fetchInstagramComments, replyToInstagramComment } from "../adapters/instagram";
+import { fetchFacebookComments, replyToFacebookComment } from "../adapters/facebook";
 
 export const pollComments = inngest.createFunction(
     { id: "poll-comments", triggers: { cron: "*/15 * * * *" }, },
@@ -20,15 +23,36 @@ export const pollComments = inngest.createFunction(
 
         for (const rule of activeRules) {
             await step.run(`process-rule-${rule.id}`, async () => {
-                const accessToken = decrypt(rule.connectedAccount.accessToken);
+                const accessToken = await getValidAccessToken(rule.connectedAccount as Parameters<typeof getValidAccessToken>[0]);
+                const repliedCommentIds = (rule.repliedCommentIds as string[]) || [];
 
-                // Simulate fetching recent comments from platform API
-                const recentComments = [
-                    { id: "c1", text: "Nice post!", username: "user1" },
-                    { id: "c2", text: "How can I buy this?", username: "user2" },
-                ];
+                let recentComments: { id: string; text: string; username: string }[] = [];
+                try {
+                    switch (rule.platform) {
+                        case "twitter":
+                            recentComments = await fetchTwitterComments(accessToken, rule.connectedAccount.platformUsername || "");
+                            break;
+                        case "instagram":
+                            recentComments = await fetchInstagramComments(accessToken, rule.connectedAccount.platformUserId);
+                            break;
+                        case "facebook":
+                            recentComments = await fetchFacebookComments(accessToken, rule.connectedAccount.platformUserId);
+                            break;
+                        default:
+                            console.log(`Auto-reply not supported for platform: ${rule.platform}`);
+                            return;
+                    }
+                } catch (error) {
+                    console.error(`Error fetching comments for ${rule.platform}:`, error);
+                    return;
+                }
+
+                const newRepliedIds = [...repliedCommentIds];
+                let hasNewReplies = false;
 
                 for (const comment of recentComments) {
+                    if (repliedCommentIds.includes(comment.id)) continue;
+
                     let shouldReply = false;
                     if (rule.triggerType === "any_comment") {
                         shouldReply = true;
@@ -47,9 +71,30 @@ export const pollComments = inngest.createFunction(
                             replyText = rule.replyTemplate.replace("{{username}}", comment.username);
                         }
 
-                        // Simulate posting reply via platform API
-                        console.log(`Replying to ${comment.username} on ${rule.platform}: ${replyText}`);
+                        try {
+                            switch (rule.platform) {
+                                case "twitter":
+                                    await replyToTwitterComment(accessToken, comment.id, replyText);
+                                    break;
+                                case "instagram":
+                                    await replyToInstagramComment(accessToken, comment.id, replyText);
+                                    break;
+                                case "facebook":
+                                    await replyToFacebookComment(accessToken, comment.id, replyText);
+                                    break;
+                            }
+                            newRepliedIds.push(comment.id);
+                            hasNewReplies = true;
+                        } catch (error) {
+                            console.error(`Error posting reply to ${rule.platform}:`, error);
+                        }
                     }
+                }
+
+                if (hasNewReplies) {
+                    await db.update(autoReplyRules)
+                        .set({ repliedCommentIds: newRepliedIds })
+                        .where(eq(autoReplyRules.id, rule.id));
                 }
             });
         }
