@@ -12,6 +12,7 @@ import { publishToYoutube } from "../adapters/youtube";
 import { publishToPinterest } from "../adapters/pinterest";
 import { publishToDiscord } from "../adapters/discord";
 import { publishToSlack } from "../adapters/slack";
+import { getValidAccessToken } from "@/lib/token-refresh";
 
 const ADAPTERS: Record<string, (args: { post: any; account: any }) => Promise<{ platformPostId: string }>> = {
     twitter: publishToTwitter,
@@ -75,7 +76,11 @@ export const publishPost = inngest.createFunction(
                 }
 
                 try {
-                    const { platformPostId } = await adapter({ post, account });
+                    const validAccessToken = await getValidAccessToken(account);
+                    const { platformPostId } = await adapter({
+                        post,
+                        account: { ...account, accessToken: validAccessToken },
+                    });
                     return { platform, status: "published", platformPostId };
                 } catch (error: any) {
                     return { platform, status: "failed", error: error.message };
