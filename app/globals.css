@@ -117,6 +117,47 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
+:root {
+  --clerk-color-primary: #007595;
+  --clerk-color-primary-foreground: #FAFAFA;
+  --clerk-color-danger: #E7000B;
+  --clerk-color-success: #22C543;
+  --clerk-color-warning: #F36B16;
+  --clerk-color-neutral: #01BB4C;
+  --clerk-color-foreground: #0A0A0A;
+  --clerk-color-muted-foreground: #737373;
+  --clerk-color-background: #FFFFFF;
+  --clerk-color-input: #E5E5E5;
+  --clerk-color-input-foreground: #0A0A0A;
+  --clerk-color-ring: #A1A1A1;
+  --clerk-color-shimmer: #FFFFFF;
+  --clerk-color-modal-backdrop: #000000;
+  --clerk-border-radius: 0.25rem;
+  --clerk-spacing: 1.125rem;
+  --clerk-color-muted: #FFFFFF;
+}
+
+.dark {
+  --clerk-color-primary: #007595;
+  --clerk-color-primary-foreground: #FAFAFA;
+  --clerk-color-danger: #FF6467;
+  --clerk-color-success: #22C543;
+  --clerk-color-warning: #F36B16;
+  --clerk-color-neutral: #01BB4C;
+  --clerk-color-foreground: #FAFAFA;
+  --clerk-color-muted-foreground: #A1A1A1;
+  --clerk-color-background: #171717;
+  --clerk-color-input: #FFFFFF;
+  --clerk-color-input-foreground: #FAFAFA;
+  --clerk-color-ring: #737373;
+  --clerk-color-shimmer: #FFFFFF;
+  --clerk-color-modal-backdrop: #000000;
+  --clerk-border-radius: 0.25rem;
+  --clerk-spacing: 1.125rem;
+  --clerk-color-muted: #171717;
+  --clerk-color-border: #FFFFFF;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -128,3 +169,6 @@
     @apply font-sans;
   }
 }
+
+
+

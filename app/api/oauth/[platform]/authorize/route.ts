@@ -16,6 +16,16 @@ export async function GET(
         return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/sign-in`);
     }
 
+    // Plan limit enforcement
+    const { checkLimit } = await import("@/lib/billing");
+    const { allowed } = await checkLimit(userId, "accounts");
+
+    if (!allowed) {
+        return NextResponse.redirect(
+            `${env.NEXT_PUBLIC_APP_URL}/billing?error=account_limit_reached`
+        );
+    }
+
     const config = OAUTH_CONFIG[platform as Platform];
 
     if (!config || !config.authorizeUrl) {

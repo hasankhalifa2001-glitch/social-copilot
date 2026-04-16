@@ -71,19 +71,11 @@ export async function POST(req: Request) {
 
         // Plan limit enforcement
         if (status === "scheduled") {
-            const now = new Date();
-            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const { checkLimit } = await import("@/lib/billing");
+            const { allowed, limit } = await checkLimit(clerkId, "postsPerMonth");
 
-            const scheduledCount = await db.query.posts.findMany({
-                where: and(
-                    eq(posts.userId, user.id),
-                    eq(posts.status, "scheduled"),
-                    gte(posts.scheduledAt, startOfMonth)
-                ),
-            });
-
-            if (user.plan === "free" && scheduledCount.length >= 10) {
-                return new NextResponse("Monthly schedule limit reached for Free plan", { status: 403 });
+            if (!allowed) {
+                return new NextResponse(`Monthly schedule limit reached. Your plan limit is ${limit} posts.`, { status: 403 });
             }
         }
 
