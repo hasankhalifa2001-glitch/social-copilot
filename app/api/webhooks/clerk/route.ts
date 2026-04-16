@@ -92,15 +92,21 @@ export async function POST(req: Request) {
 
         // Extraction based on the actual payload
         const clerkUserId = subData.payer?.user_id;
-        // Find the active subscription item
-        const activeItem = subData.items?.find((item: any) => item.status === "active");
-        const planSlug = activeItem?.plan?.slug;
+        // Find the relevant subscription item
+        // Primary: status === 'active'
+        // Fallback 1: status === 'upcoming' (useful during downgrades)
+        // Fallback 2: the most recently updated item
+        const relevantItem = subData.items?.find((item: any) => item.status === "active")
+            || subData.items?.find((item: any) => item.status === "upcoming")
+            || subData.items?.sort((a: any, b: any) => (b.updated_at || 0) - (a.updated_at || 0))[0];
+
+        const planSlug = relevantItem?.plan?.slug;
         const status = subData.status;
         const subscriptionId = subData.id;
 
         // Handle dates - Clerk uses milliseconds for some timestamps or Date objects depending on SDK
-        const current_period_start = subData.current_period_start || (activeItem?.period_start);
-        const current_period_end = subData.current_period_end || (activeItem?.period_end);
+        const current_period_start = subData.current_period_start || (relevantItem?.period_start);
+        const current_period_end = subData.current_period_end || (relevantItem?.period_end);
 
         console.log(`Processing ${eventType}:`, {
             subscriptionId,
