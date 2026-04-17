@@ -38,7 +38,7 @@ export default function WeekView({ currentDate, posts, onPostUpdate }: WeekViewP
             <div className="grid grid-cols-[60px_repeat(7,1fr)] bg-muted/50 border-b">
                 <div className="py-2 border-r"></div>
                 {days.map((day) => (
-                    <div key={day.toString()} className="py-2 text-center text-sm font-medium border-r last:border-r-0">
+                    <div key={day.toISOString()} className="py-2 text-center text-sm font-medium border-r last:border-r-0">
                         <div className="text-muted-foreground">{format(day, "EEE")}</div>
                         <div className={cn(
                             "inline-flex items-center justify-center w-7 h-7 mt-1 rounded-full",
