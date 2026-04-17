@@ -56,29 +56,51 @@ export async function fetchTwitterAnalytics(accessToken: string, userId: string)
 }
 
 export async function publishToTwitter({ post, account }: { post: any; account: any }) {
-    const client = new TwitterApi(account.accessToken);
+    const options = {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${account.accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            text: post.content,
+            card_uri: post.cardUri,
+            community_id: post.communityId,
+            direct_message_deep_link: post.dmDeepLink,
+            for_super_followers_only: post.forSuperFollowersOnly || false,
+            geo: post.geo ? { place_id: post.geo.placeId } : undefined,
+            made_with_ai: post.madeWithAi ?? true,
+            nullcast: post.nullcast || false,
+            paid_partnership: post.paidPartnership || false,
+            quote_tweet_id: post.quoteTweetId,
+            reply_settings: post.replySettings,
+            share_with_followers: post.shareWithFollowers ?? true,
+        })
+    };
 
-    const mediaIds: string[] = [];
+    try {
+        const response = await fetch('https://api.x.com/2/tweets', options);
+        const data = await response.json();
 
-    if (post.mediaUrls && post.mediaUrls.length > 0) {
-        for (const url of post.mediaUrls) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-
-            // Determine mime type from URL or response headers if possible
-            // For simplicity, we'll try to detect or use a default
-            const mediaId = await client.v1.uploadMedia(buffer, { type: url.endsWith(".mp4") ? "video/mp4" : "image/jpeg" });
-            mediaIds.push(mediaId);
+        if (!response.ok) {
+            console.error("Twitter API Error Response:", data);
+            if (response.status === 403) {
+                throw new Error("فشل النشر: تأكد من صلاحيات Write في تطبيقك أو حدود اشتراكك.");
+            }
+            if (response.status === 429) {
+                throw new Error("تم تجاوز حد النشر المسموح به (Rate Limit). حاول لاحقاً.");
+            }
+            throw new Error(data.detail || data.message || "Failed to publish to Twitter");
         }
+
+        console.log("Tweet published successfully:", data.data.id);
+
+        return {
+            platformPostId: data.data.id,
+            status: "success"
+        };
+    } catch (error: any) {
+        console.error("Error publishing to Twitter:", error);
+        throw error;
     }
-
-    const { data: tweet } = await client.v2.tweet({
-        text: post.content,
-        ...(mediaIds.length > 0
-            ? { media: { media_ids: mediaIds.slice(0, 4) as [string] | [string, string] | [string, string, string] | [string, string, string, string] } }
-            : {}),
-    });
-
-    return { platformPostId: tweet.id };
 }
