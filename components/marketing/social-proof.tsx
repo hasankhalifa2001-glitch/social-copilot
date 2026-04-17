@@ -1,4 +1,5 @@
 import { Users } from "lucide-react"
+import Image from "next/image"
 
 export function SocialProof() {
     return (
@@ -10,12 +11,14 @@ export function SocialProof() {
                             {[1, 2, 3, 4].map((i) => (
                                 <div
                                     key={i}
-                                    className="h-10 w-10 rounded-full border-2 border-background bg-muted flex items-center justify-center overflow-hidden"
+                                    className="relative h-10 w-10 rounded-full border-2 border-background bg-muted flex items-center justify-center overflow-hidden"
                                 >
-                                    <img
+                                    <Image
                                         src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
                                         alt="Avatar"
-                                        className="h-full w-full object-cover"
+                                        fill
+                                        className="object-cover"
+                                        unoptimized
                                     />
                                 </div>
                             ))}
