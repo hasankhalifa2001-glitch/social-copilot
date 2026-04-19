@@ -1,9 +1,12 @@
+"use client"
+
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { SectionWrapper } from "./section-wrapper"
 
 const faqs = [
     {
@@ -34,25 +37,25 @@ const faqs = [
 
 export function FAQ() {
     return (
-        <section className="py-24 md:py-32">
+        <SectionWrapper id="faq" className="py-24 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col items-center text-center space-y-4 mb-16">
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        Frequently Asked <span className="text-primary">Questions</span>
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                        Frequently Asked <span className="bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Questions</span>
                     </h2>
-                    <p className="max-w-2xl text-muted-foreground">
+                    <p className="max-w-2xl text-lg text-muted-foreground">
                         Everything you need to know about Social Copilot.
                     </p>
                 </div>
 
                 <div className="mx-auto max-w-3xl">
-                    <Accordion type="single" collapsible className="w-full">
+                    <Accordion type="single" collapsible className="w-full space-y-4">
                         {faqs.map((faq, index) => (
-                            <AccordionItem key={index} value={`item-${index}`}>
-                                <AccordionTrigger className="text-left font-medium">
+                            <AccordionItem key={index} value={`item-${index}`} className="border rounded-2xl px-6 bg-white dark:bg-neutral-900/50 shadow-sm border-slate-200 dark:border-white/10">
+                                <AccordionTrigger className="text-left font-bold text-lg hover:no-underline hover:text-indigo-600 dark:hover:text-indigo-400 py-6 transition-colors">
                                     {faq.question}
                                 </AccordionTrigger>
-                                <AccordionContent className="text-muted-foreground">
+                                <AccordionContent className="text-muted-foreground text-base pb-6 leading-relaxed">
                                     {faq.answer}
                                 </AccordionContent>
                             </AccordionItem>
@@ -60,6 +63,6 @@ export function FAQ() {
                     </Accordion>
                 </div>
             </div>
-        </section>
+        </SectionWrapper>
     )
 }

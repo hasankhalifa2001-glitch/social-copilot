@@ -11,7 +11,7 @@ export function Footer() {
                     <div className="col-span-2 lg:col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-4">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                                <Sparkles className="h-5 w-5 text-zinc-950 dark:text-zinc-50" />
+                                <Sparkles className="h-5 w-5  dark:text-zinc-50" />
                             </div>
                             <span className="text-xl font-bold tracking-tight">Social Copilot</span>
                         </Link>

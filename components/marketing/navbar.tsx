@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { Menu, Sparkles } from "lucide-react";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,25 +23,53 @@ const navLinks = [
 ];
 
 export function Navbar() {
+    const { scrollY } = useScroll();
+
+    const backgroundColor = useTransform(
+        scrollY,
+        [0, 20],
+        ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.7)"]
+    );
+
+    const darkBackgroundColor = useTransform(
+        scrollY,
+        [0, 20],
+        ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.5)"]
+    );
+
+    const borderBottomColor = useTransform(
+        scrollY,
+        [0, 20],
+        ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.05)"]
+    );
+
+    const darkBorderBottomColor = useTransform(
+        scrollY,
+        [0, 20],
+        ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.1)"]
+    );
+
     const [isScrolled, setIsScrolled] = React.useState(false);
 
     React.useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+        return scrollY.onChange((latest) => {
+            setIsScrolled(latest > 20);
+        });
+    }, [scrollY]);
 
     const { isSignedIn } = useUser();
 
     return (
-        <nav
+        <motion.nav
+            style={{
+                backgroundColor: isScrolled ? undefined : "transparent",
+                borderBottomColor: isScrolled ? undefined : "transparent",
+            }}
             className={cn(
-                "sticky top-0 z-50 w-full transition-all duration-300",
+                "sticky top-0 z-50 w-full transition-all duration-500",
                 isScrolled
-                    ? "border-b bg-background/80 backdrop-blur-md"
-                    : "bg-transparent",
+                    ? "backdrop-blur-md border-b bg-white/70 dark:bg-black/50 border-black/5 dark:border-white/10"
+                    : "bg-transparent border-transparent"
             )}
         >
             <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
@@ -144,6 +173,6 @@ export function Navbar() {
                     </Sheet>
                 </div>
             </div>
-        </nav>
+        </motion.nav>
     );
 }

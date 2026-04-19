@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/marketing/navbar"
 import { Hero } from "@/components/marketing/hero"
 import { SocialProof } from "@/components/marketing/social-proof"
-import { Features } from "@/components/marketing/features"
+import { BentoFeatures } from "@/components/marketing/bento-features"
 import { HowItWorks } from "@/components/marketing/how-it-works"
 import { Pricing } from "@/components/marketing/pricing"
 import { Testimonials } from "@/components/marketing/testimonials"
@@ -16,7 +16,7 @@ export default function MarketingPage() {
             <main className="flex-1">
                 <Hero />
                 <SocialProof />
-                <Features />
+                <BentoFeatures />
                 <HowItWorks />
                 <Pricing />
                 <Testimonials />

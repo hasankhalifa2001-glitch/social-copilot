@@ -13,7 +13,7 @@ const features = [
         icon: Sparkles,
         className: "md:col-span-2",
         iconColor: "text-indigo-500",
-        badge: "Most Popular",
+        badge: "Hero Feature",
         bgGradient: "from-indigo-500/10 to-transparent",
     },
     {
@@ -58,53 +58,49 @@ const itemVariants: Variants = {
         opacity: 1,
         y: 0,
         transition: {
-            duration: 0.5,
-            ease: "easeOut",
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
         },
     },
 }
 
-export function Features() {
+export function BentoFeatures() {
     return (
-        <section id="features" className="py-24 md:py-32 relative overflow-hidden">
-            {/* Background Decorations */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 pointer-events-none">
-                <div className="absolute top-0 left-1/4 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
-            </div>
-
+        <section id="features" className="py-24 md:py-32 relative overflow-hidden bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col items-center text-center space-y-4 mb-16">
                     <motion.div
-                        initial={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.5 }}
                     >
                         <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium border-indigo-500/20 bg-indigo-500/5 text-indigo-600 dark:text-indigo-400">
-                            Core Features
+                            Features
                         </Badge>
                     </motion.div>
 
                     <motion.h2
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                        className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
                     >
-                        Everything you need to <br />
-                        <span className="text-primary">grow your social presence</span>
+                        Master your social presence <br />
+                        <span className="bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-violet-400">
+                            with AI-powered tools
+                        </span>
                     </motion.h2>
 
                     <motion.p
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="max-w-2xl text-lg text-muted-foreground"
                     >
-                        Powerful features designed to help you create, schedule, and analyze content across all platforms without the headache.
+                        Stop wrestling with multiple tabs. Our unified platform gives you everything you need to grow across all your favorite networks.
                     </motion.p>
                 </div>
 
@@ -115,20 +111,18 @@ export function Features() {
                     viewport={{ once: true, margin: "-100px" }}
                     className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    {features.map((feature, index) => (
+                    {features.map((feature) => (
                         <motion.div
                             key={feature.title}
                             variants={itemVariants}
-                            whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                            className={cn("group", feature.className)}
+                            whileHover={{ y: -8 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            className={cn("group h-full", feature.className)}
                         >
-                            <Card className="h-full relative overflow-hidden transition-all duration-300 bg-white dark:bg-neutral-900/50 border-slate-200 dark:border-white/10 hover:shadow-xl hover:shadow-indigo-500/10 dark:hover:shadow-indigo-500/20 hover:border-indigo-500/50 group-hover:ring-1 group-hover:ring-indigo-500/20">
-                                {/* Decorative Gradient */}
-                                <div className={cn("absolute inset-0 bg-linear-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10", feature.bgGradient)} />
-
+                            <Card className="h-full relative overflow-hidden transition-all duration-300 bg-white dark:bg-neutral-900/50 border-slate-200 dark:border-white/10 hover:shadow-2xl hover:shadow-indigo-500/20">
                                 <CardHeader className="pb-4">
                                     <div className="flex items-center justify-between mb-4">
-                                        <div className={cn("p-3 rounded-2xl bg-slate-100 dark:bg-white/5 transition-colors group-hover:bg-white dark:group-hover:bg-white/10", feature.iconColor)}>
+                                        <div className={cn("p-3 rounded-2xl bg-slate-100 dark:bg-white/5 transition-colors group-hover:bg-white dark:group-hover:bg-white/10 shadow-sm", feature.iconColor)}>
                                             <feature.icon className="h-6 w-6" />
                                         </div>
                                         {feature.badge && (
@@ -137,19 +131,21 @@ export function Features() {
                                             </Badge>
                                         )}
                                     </div>
-                                    <CardTitle className="text-2xl font-bold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    <CardTitle className="text-2xl font-bold">
                                         {feature.title}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <CardDescription className="text-base text-muted-foreground group-hover:text-foreground/80 transition-colors leading-relaxed">
+                                    <CardDescription className="text-base text-muted-foreground leading-relaxed">
                                         {feature.description}
                                     </CardDescription>
 
-                                    <div className="mt-8 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
-                                        Learn more <ArrowRight className="ml-2 h-4 w-4" />
+                                    <div className="mt-8 flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 group-hover:gap-2 transition-all">
+                                        Learn more <ArrowRight className="h-4 w-4" />
                                     </div>
                                 </CardContent>
+                                {/* Decorative elements */}
+                                <div className={cn("absolute bottom-0 right-0 w-32 h-32 bg-linear-to-br opacity-10 group-hover:opacity-20 transition-opacity -mr-8 -mb-8 rounded-full blur-2xl", feature.bgGradient)} />
                             </Card>
                         </motion.div>
                     ))}
