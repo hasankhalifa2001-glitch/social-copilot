@@ -13,9 +13,15 @@ const AUTH_TAG_LENGTH = 16;
  */
 export function encrypt(text: string): string {
     const iv = randomBytes(IV_LENGTH);
+    const keyBuffer = Buffer.from(env.TOKEN_ENCRYPTION_KEY, "hex");
+
+    if (keyBuffer.length !== 32) {
+        throw new Error(`Invalid TOKEN_ENCRYPTION_KEY length: expected 32 bytes (64 hex chars), got ${keyBuffer.length} bytes`);
+    }
+
     const cipher = createCipheriv(
         ALGORITHM,
-        Buffer.from(env.TOKEN_ENCRYPTION_KEY, "hex"),
+        keyBuffer,
         iv
     );
 
@@ -33,19 +39,35 @@ export function encrypt(text: string): string {
  * @returns The decrypted plain text.
  */
 export function decrypt(ciphertext: string): string {
-    const [ivHex, encryptedHex, authTagHex] = ciphertext.split(":");
+    if (!ciphertext) {
+        throw new Error("Ciphertext is missing");
+    }
+
+    const parts = ciphertext.split(":");
+
+    if (parts.length !== 3) {
+        throw new Error(`Invalid ciphertext format: expected 3 parts, got ${parts.length}`);
+    }
+
+    const [ivHex, encryptedHex, authTagHex] = parts;
 
     if (!ivHex || !encryptedHex || !authTagHex) {
-        throw new Error("Invalid ciphertext format");
+        throw new Error("Invalid ciphertext format: one or more parts are empty");
     }
 
     const iv = Buffer.from(ivHex, "hex");
     const encrypted = Buffer.from(encryptedHex, "hex");
     const authTag = Buffer.from(authTagHex, "hex");
 
+    const keyBuffer = Buffer.from(env.TOKEN_ENCRYPTION_KEY, "hex");
+
+    if (keyBuffer.length !== 32) {
+        throw new Error(`Invalid TOKEN_ENCRYPTION_KEY length: expected 32 bytes (64 hex chars), got ${keyBuffer.length} bytes`);
+    }
+
     const decipher = createDecipheriv(
         ALGORITHM,
-        Buffer.from(env.TOKEN_ENCRYPTION_KEY, "hex"),
+        keyBuffer,
         iv
     );
 

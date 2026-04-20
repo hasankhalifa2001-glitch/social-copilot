@@ -94,6 +94,9 @@ export const publishPost = inngest.createFunction(
                 }
             });
 
+
+            console.log(result)
+
             results.push(result);
 
             await step.run(`upsert-result-${platform}`, async () => {
