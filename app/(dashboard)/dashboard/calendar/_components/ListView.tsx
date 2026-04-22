@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { Post } from "./CalendarEvent";
 import { IconType } from "react-icons";
-import { cn } from "@/lib/utils";
+import { cn, parsePostContent } from "@/lib/utils";
 
 interface ListViewProps {
     posts: Post[];
@@ -116,7 +116,7 @@ export default function ListView({ posts, isLoading, onPostUpdate }: ListViewPro
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-medium truncate max-w-125">
-                                            {post.content}
+                                            {parsePostContent(post.content)}
                                         </p>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-xs text-muted-foreground">

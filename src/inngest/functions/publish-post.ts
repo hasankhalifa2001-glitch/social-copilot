@@ -47,7 +47,6 @@ export const publishPost = inngest.createFunction(
             });
         });
 
-        console.log(post)
 
         if (!post) return { error: "Post not found" };
         // if (post.status === "published")  { message: "Post already published" };
@@ -66,6 +65,8 @@ export const publishPost = inngest.createFunction(
                     (acc: any) => acc.platform === platform && acc.isActive
                 );
 
+                console.log(account)
+
                 if (!account) {
                     return { platform, status: "failed", error: "Account not connected or inactive" };
                 }
@@ -75,19 +76,41 @@ export const publishPost = inngest.createFunction(
                     return { platform, status: "failed", error: "No adapter found for platform" };
                 }
 
+                console.log(adapter)
+
                 try {
                     const validAccessToken = await getValidAccessToken(account);
 
+                    console.log(validAccessToken)
+
                     // Handle per-platform content customization
-                    let platformSpecificContent = post.content;
-                    if (typeof post.content === "object" && post.content !== null) {
-                        platformSpecificContent = (post.content as Record<string, string>)[platform] || (post.content as Record<string, string>).base;
+                    let contentObj = post.content;
+
+                    // Safely parse JSON string if it's a string starting with {
+                    if (typeof post.content === "string" && post.content.trim().startsWith("{")) {
+                        try {
+                            contentObj = JSON.parse(post.content);
+                        } catch (e) {
+                            console.error("Failed to parse post content JSON:", e);
+                        }
                     }
+
+                    let platformSpecificContent = "";
+
+                    if (typeof contentObj === "object" && contentObj !== null) {
+                        platformSpecificContent = (contentObj as Record<string, string>)[platform] || (contentObj as Record<string, string>).base || "";
+                    } else if (typeof contentObj === "string") {
+                        platformSpecificContent = contentObj;
+                    }
+
+                    console.log(platformSpecificContent)
 
                     const { platformPostId } = await adapter({
                         post: { ...post, content: platformSpecificContent },
                         account: { ...account, accessToken: validAccessToken },
                     });
+
+                    console.log(platformPostId)
                     return { platform, status: "published", platformPostId };
                 } catch (error: any) {
                     return { platform, status: "failed", error: error.message };

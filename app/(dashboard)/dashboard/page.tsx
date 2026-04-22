@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus, Calendar, ArrowUpRight } from "lucide-react";
 import { getDashboardData } from "@/lib/actions/dashboard";
+import { parsePostContent } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -105,7 +106,9 @@ async function RecentPosts() {
                                     </Badge>
                                 ))}
                             </div>
-                            <p className="text-sm font-medium truncate">{post.content}</p>
+                            <p className="text-sm font-medium truncate">
+                                {parsePostContent(post.content)}
+                            </p>
                             <p className="text-xs text-muted-foreground">
                                 {post.scheduledAt ? format(new Date(post.scheduledAt), "PPP p") : "Not scheduled"}
                             </p>

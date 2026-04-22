@@ -2,23 +2,83 @@
 import { decrypt } from "@/lib/crypto";
 
 export async function publishToLinkedin({ post, account }: { post: any; account: any }) {
-    const accessToken = decrypt(account.accessToken);
+    const accessToken = account.accessToken;
+    const author = `urn:li:person:${account.platformUserId}`;
 
-    const body = {
-        author: `urn:li:person:${account.platformUserId}`,
+    let mediaAsset = null;
+    const imageUrl = post.mediaUrls?.[0];
+
+    if (imageUrl) {
+        // Step 1: Register Upload
+        const registerRes = await fetch("https://api.linkedin.com/v2/assets?action=registerUpload", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                registerUploadRequest: {
+                    recipes: ["urn:li:digitalmediaRecipe:feedshare-image"],
+                    owner: author,
+                    serviceRelationships: [
+                        {
+                            relationshipType: "OWNER",
+                            identifier: "urn:li:userGeneratedContent",
+                        },
+                    ],
+                },
+            }),
+        });
+
+        const registerData = await registerRes.json();
+        if (!registerRes.ok) {
+            throw new Error(`LinkedIn registerUpload failed: ${JSON.stringify(registerData)}`);
+        }
+
+        const uploadUrl = registerData.value.uploadMechanism["com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"].uploadUrl;
+        mediaAsset = registerData.value.asset;
+
+        // Step 2: Upload Image
+        const imageRes = await fetch(imageUrl);
+        const imageBlob = await imageRes.blob();
+
+        const uploadRes = await fetch(uploadUrl, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: imageBlob,
+        });
+
+        if (!uploadRes.ok) {
+            throw new Error(`LinkedIn image upload failed: ${uploadRes.statusText}`);
+        }
+    }
+
+    const body: any = {
+        author,
         lifecycleState: "PUBLISHED",
         specificContent: {
             "com.linkedin.ugc.ShareContent": {
                 shareCommentary: {
                     text: post.content,
                 },
-                shareMediaCategory: "NONE",
+                shareMediaCategory: mediaAsset ? "IMAGE" : "NONE",
             },
         },
         visibility: {
             "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
         },
     };
+
+    if (mediaAsset) {
+        body.specificContent["com.linkedin.ugc.ShareContent"].media = [
+            {
+                status: "READY",
+                media: mediaAsset,
+            },
+        ];
+    }
 
     const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
         method: "POST",
