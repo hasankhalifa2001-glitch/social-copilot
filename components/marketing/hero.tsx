@@ -128,7 +128,7 @@ export function Hero() {
                                     key={p.name}
                                     initial={{ opacity: 0, scale: 0.5 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.3, delay: 0.3 + i * 0.05 }}
+                                    transition={{ duration: 0.3, delay: 0.3 + i * 0.1 }}
                                     whileHover={{ y: -5, scale: 1.1 }}
                                     className={`flex h-14 w-14 items-center justify-center rounded-2xl border bg-background/50 shadow-sm backdrop-blur-md transition-colors md:h-16 md:w-16 ${p.color}`}
                                     title={p.name}
