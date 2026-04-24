@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { format, startOfWeek, addHours, startOfDay, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import CalendarEvent, { Post } from "./CalendarEvent";
@@ -53,7 +53,7 @@ export default function WeekView({ currentDate, posts, onPostUpdate }: WeekViewP
             <div className="flex-1 overflow-y-auto max-h-150">
                 <div className="grid grid-cols-[60px_repeat(7,1fr)]">
                     {hours.map((hour) => (
-                        <>
+                        <React.Fragment key={`hour-row-${hour}`}>
                             <div key={`hour-${hour}`} className="py-4 text-center text-[10px] text-muted-foreground border-r border-b">
                                 {format(addHours(startOfDay(new Date()), hour), "h a")}
                             </div>
@@ -71,7 +71,7 @@ export default function WeekView({ currentDate, posts, onPostUpdate }: WeekViewP
                                     </div>
                                 );
                             })}
-                        </>
+                        </React.Fragment>
                     ))}
                 </div>
             </div>
