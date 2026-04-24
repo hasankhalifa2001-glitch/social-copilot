@@ -18,8 +18,9 @@ const updateRuleSchema = z.object({
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const { userId: clerkId } = await auth();
         if (!clerkId) {
@@ -39,7 +40,7 @@ export async function PATCH(
 
         const rule = await db.query.autoReplyRules.findFirst({
             where: and(
-                eq(autoReplyRules.id, params.id),
+                eq(autoReplyRules.id, id),
                 eq(autoReplyRules.userId, user.id)
             ),
         });
@@ -51,7 +52,7 @@ export async function PATCH(
         const [updatedRule] = await db
             .update(autoReplyRules)
             .set(validatedData)
-            .where(eq(autoReplyRules.id, params.id))
+            .where(eq(autoReplyRules.id, id))
             .returning();
 
         return NextResponse.json(updatedRule);
@@ -66,8 +67,9 @@ export async function PATCH(
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     try {
         const { userId: clerkId } = await auth();
         if (!clerkId) {
@@ -84,7 +86,7 @@ export async function DELETE(
 
         const rule = await db.query.autoReplyRules.findFirst({
             where: and(
-                eq(autoReplyRules.id, params.id),
+                eq(autoReplyRules.id, id),
                 eq(autoReplyRules.userId, user.id)
             ),
         });
@@ -93,7 +95,7 @@ export async function DELETE(
             return new NextResponse("Not Found", { status: 404 });
         }
 
-        await db.delete(autoReplyRules).where(eq(autoReplyRules.id, params.id));
+        await db.delete(autoReplyRules).where(eq(autoReplyRules.id, id));
 
         return new NextResponse(null, { status: 204 });
     } catch (error) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
@@ -18,7 +18,7 @@ interface ConnectedAccount {
     createdAt: string;
 }
 
-export default function AccountsPage() {
+function AccountsContent() {
     const [accounts, setAccounts] = useState<ConnectedAccount[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,5 +119,17 @@ export default function AccountsPage() {
                 connectedPlatforms={accounts.map((a) => a.platform)}
             />
         </div>
+    );
+}
+
+export default function AccountsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        }>
+            <AccountsContent />
+        </Suspense>
     );
 }
