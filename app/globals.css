@@ -120,7 +120,7 @@
 }
 
 :root {
-  --clerk-color-primary: #007595;
+  --clerk-color-primary: #4f39f6;
   --clerk-color-primary-foreground: #FAFAFA;
   --clerk-color-danger: #E7000B;
   --clerk-color-success: #22C543;
@@ -140,7 +140,7 @@
 }
 
 .dark {
-  --clerk-color-primary: #007595;
+  --clerk-color-primary: #4f39f6;
   --clerk-color-primary-foreground: #FAFAFA;
   --clerk-color-danger: #FF6467;
   --clerk-color-success: #22C543;
