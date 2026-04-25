@@ -8,7 +8,7 @@ export const { GET, POST, PUT } = serve({
     client: inngest,
     functions: [
         publishPost,
-        pollComments,
-        syncAnalytics,
+        // pollComments,
+        // syncAnalytics,
     ],
 });
