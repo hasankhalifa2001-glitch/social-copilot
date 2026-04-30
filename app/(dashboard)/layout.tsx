@@ -74,6 +74,7 @@ export default function DashboardLayout({
                             <Link
                                 key={item.label}
                                 href={item.href}
+                                onClick={() => setIsMobileSidebarOpen(false)}
                                 className={cn(
                                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
                                     isActive

@@ -55,11 +55,11 @@ function StatsSkeleton() {
             {[1, 2, 3].map((i) => (
                 <Card key={i}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-4 w-25" />
                     </CardHeader>
                     <CardContent>
-                        <Skeleton className="h-8 w-[60px]" />
-                        <Skeleton className="h-3 w-[80px] mt-2" />
+                        <Skeleton className="h-8 w-15" />
+                        <Skeleton className="h-3 w-20 mt-2" />
                     </CardContent>
                 </Card>
             ))}
@@ -165,14 +165,14 @@ export default function DashboardPage() {
                 <div className="flex items-center space-x-2">
                     <Button asChild variant="outline">
                         <Link href="/dashboard/calendar">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            View Calendar
+                            <Calendar className="md:mr-2 h-4 w-4" />
+                            <span className="hidden md:block">View Calendar</span>
                         </Link>
                     </Button>
                     <Button asChild>
                         <Link href="/dashboard/compose">
-                            <Plus className="mr-2 h-4 w-4" />
-                            New Post
+                            <Plus className="md:mr-2 h-4 w-4" />
+                            <span className="hidden md:block">New Post</span>
                         </Link>
                     </Button>
                 </div>

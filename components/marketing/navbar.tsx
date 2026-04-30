@@ -13,6 +13,7 @@ import {
     SheetContent,
     SheetTrigger,
     SheetTitle,
+    SheetClose,
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -139,9 +140,11 @@ export function Navbar() {
                                         <Link
                                             key={link.title}
                                             href={link.href}
-                                            className="text-lg font-medium text-muted-foreground hover:text-primary"
+                                            className="text-lg ml-2 font-medium text-muted-foreground hover:text-primary"
                                         >
-                                            {link.title}
+                                            <SheetClose>
+                                                {link.title}
+                                            </SheetClose>
                                         </Link>
                                     ))}
                                 </div>
